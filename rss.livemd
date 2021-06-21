@@ -1,0 +1,21 @@
+# Playground
+
+## RSS
+
+```elixir
+Mix.install([
+  {:req, github: "wojtekmach/req"},
+  {:easyxml, github: "wojtekmach/easyxml"}
+])
+
+doc = Req.get!("https://dashbit.co/feed").body |> EasyXML.parse!()
+doc["/feed/title"]
+```
+
+```elixir
+EasyXML.xpath(doc, "//entry[1]")
+```
+
+```elixir
+doc |> EasyXML.xpath("//entry") |> Enum.take(3) |> Enum.map(&"#{&1["updated"]} - #{&1["title"]}")
+```
