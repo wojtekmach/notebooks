@@ -1,0 +1,36 @@
+# RSS
+
+## RSS
+
+```elixir
+Mix.install([
+  :kino,
+  {:req, github: "wojtekmach/req"},
+  {:easyxml, github: "wojtekmach/easyxml"}
+])
+
+defmodule RSS do
+  def new(url) do
+    doc = Req.get!(url).body |> EasyXML.parse!()
+    title = doc["/feed/title"]
+
+    entries =
+      for entry <- doc |> EasyXML.xpath("/feed/entry") |> Enum.take(10) do
+        %{
+          title: entry["title"],
+          url: entry["link/@href"],
+          updated: entry["updated"] |> NaiveDateTime.from_iso8601!() |> Date.to_string()
+        }
+      end
+
+    Kino.Markdown.new("""
+    ## #{title}
+    #{for entry <- entries, do: "* [#{entry.title} (#{entry.updated})](#{entry.url})\n"}
+    """)
+  end
+end
+```
+
+```elixir
+RSS.new("https://dashbit.co/feed")
+```
