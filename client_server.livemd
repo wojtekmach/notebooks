@@ -1,0 +1,37 @@
+# Client Server
+
+## Setup
+
+```elixir
+Mix.install([
+  :plug_cowboy,
+  :req
+])
+```
+
+<!-- livebook:{"branch_parent_index":0} -->
+
+## Server
+
+```elixir
+defmodule Server do
+  use Plug.Router
+  plug(Plug.Logger)
+  plug(:match)
+  plug(:dispatch)
+
+  match _ do
+    send_resp(conn, 200, "Hello, World!")
+  end
+end
+
+plug_cowboy = {Plug.Cowboy, plug: Server, scheme: :http, port: 4000}
+{:ok, _} = Supervisor.start_link([plug_cowboy], name: Server.Supervisor, strategy: :one_for_one)
+Process.sleep(:infinity)
+```
+
+## Client
+
+```elixir
+Req.get!("http://localhost:4000").body
+```
