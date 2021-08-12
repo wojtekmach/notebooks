@@ -1,0 +1,66 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Req plugins
+
+## Deps
+
+```elixir
+Mix.install([
+  {:req, github: "wojtekmach/req", branch: "wm-plugins"},
+  {:req_s3, github: "wojtekmach/req_s3"},
+  {:req_hex, github: "wojtekmach/req_hex"}
+])
+```
+
+```output
+:ok
+```
+
+## S3
+
+```elixir
+Req.get!("s3://ossci-datasets/", plugins: [ReqS3]).body
+```
+
+```output
+["mnist/", "mnist/t10k-images-idx3-ubyte.gz", "mnist/t10k-labels-idx1-ubyte.gz",
+ "mnist/train-images-idx3-ubyte.gz", "mnist/train-labels-idx1-ubyte.gz"]
+```
+
+```elixir
+body = Req.get!("s3://ossci-datasets/mnist/train-images-idx3-ubyte.gz", plugins: [ReqS3]).body
+<<_::32, n_images::32, n_rows::32, n_cols::32, _body::binary>> = body
+{n_images, n_rows, n_cols}
+```
+
+```output
+{60000, 28, 28}
+```
+
+## Hex
+
+```elixir
+body = Req.get!("hex://hexpm/versions", plugins: [ReqHex]).body
+Enum.find(body, &(&1.name == "req"))
+```
+
+```output
+%{name: "req", retired: [], versions: ["0.1.0", "0.1.1"]}
+```
+
+```elixir
+Req.get!("hex://hexpm/tarballs/req-0.1.0.tar", plugins: [ReqHex]).body
+```
+
+```output
+[
+  {'VERSION', "3"},
+  {'CHECKSUM', "D4F2ADCC822B242645871FE3B6598DB9279FFA57D09F34B94A33819A69B2860C"},
+  {'metadata.config',
+   "{<<\"app\">>,<<\"req\">>}.\n{<<\"build_tools\">>,[<<\"mix\">>]}.\n{<<\"description\">>,\n <<\"Req is an HTTP client with a focus on ease of use and composability, built on top of Finch.\">>}.\n{<<\"elixir\">>,<<\"~> 1.11\">>}.\n{<<\"files\">>,\n [<<\"lib\">>,<<\"lib/req\">>,<<\"lib/req/request.ex\">>,\n  <<\"lib/req/application.ex\">>,<<\"lib/req.ex\">>,<<\".formatter.exs\">>,\n  <<\"mix.exs\">>,<<\"README.md\">>,<<\"CHANGELOG.md\">>]}.\n{<<\"licenses\">>,[<<\"Apache-2.0\">>]}.\n{<<\"links\">>,[{<<\"GitHub\">>,<<\"https://github.com/wojtekmach/req\">>}]}.\n{<<\"name\">>,<<\"req\">>}.\n{<<\"requirements\">>,\n [[{<<\"app\">>,<<\"finch\">>},\n   {<<\"name\">>,<<\"finch\">>},\n   {<<\"optional\">>,false},\n   {<<\"repository\">>,<<\"hexpm\">>},\n   {<<\"requirement\">>,<<\"~> 0.6.0\">>}],\n  [{<<\"app\">>,<<\"mime\">>},\n   {<<\"name\">>,<<\"mime\">>},\n   {<<\"optional\">>,false},\n   {<<\"repository\">>,<<\"hexpm\">>},\n   {<<\"requirement\">>,<<\"~> 1.6\">>}],\n  [{<<\"app\">>,<<\"jason\">>},\n   {<<\"name\">>,<<\"jason\">>},\n   {<<\"optional\">>,false},\n   {<<\"repository\">>,<<\"hexpm\">>},\n   {<<\"requirement\">>,<<\"~> 1.0\">>}],\n  [{<<\"app\">>,<<\"nimble_csv\">>},\n   {<<\"name\">>,<<\"nimble_csv\">>},\n   {<<\"optional\">>,true},\n   {<<\"repository\">>,<<\"hexpm\">>},\n   {<<\"requirement\">>,<<\"~> 1.0\">>}]]}.\n{<<\"version\">>,<<\"0.1.0\">>}.\n"},
+  {'contents.tar.gz',
+   <<31, 139, 8, 0, 0, 0, 0, 0, 0, 0, 237, 61, 253, 119, 219, 54, 146, 251, 179, 254, 10, 152, 126,
+     201, 74, 173, 76, 75, 182, 227, 180, 186, 38, 61, 55, 77, 27, 223, 54, 73, 95, 226, 110, 223,
+     ...>>}
+]
+```
