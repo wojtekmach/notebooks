@@ -1,7 +1,12 @@
 <!-- vim: syntax=markdown -->
 
 <!-- livebook:{"persist_outputs":true} -->
+
 # Req v0.2.0
+
+## Badge
+
+[![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https%3A%2F%2Fgithub.com%2Fwojtekmach%2Fnotebooks%2Fblob%2Fmain%2Freq_0.2.0.livemd)
 
 ## Setup
 
@@ -15,8 +20,6 @@ Mix.install([
 ```output
 :ok
 ```
-
-<!-- livebook:{"branch_parent_index":0} -->
 
 ## Defaults
 
@@ -48,6 +51,15 @@ Req.get!("/issues").body
 ```
 
 ## "Plugins" (just steps!)
+
+```elixir
+# reset default options set in the previous section
+Req.default_options([])
+```
+
+```output
+:ok
+```
 
 ```elixir
 Req.get!("s3://ossci-datasets/", steps: [ReqS3]).body
