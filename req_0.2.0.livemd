@@ -1,6 +1,6 @@
-<!-- livebook:{"persist_outputs":true} -->
 <!-- vim: syntax=markdown -->
 
+<!-- livebook:{"persist_outputs":true} -->
 # Req v0.2.0
 
 ## Setup
