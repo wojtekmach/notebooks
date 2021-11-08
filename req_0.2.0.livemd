@@ -1,0 +1,69 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Req v0.2.0
+
+## Setup
+
+```elixir
+Mix.install([
+  {:req, "~> 0.2.0"},
+  {:req_s3, github: "wojtekmach/req_s3"}
+])
+```
+
+```output
+:ok
+```
+
+<!-- livebook:{"branch_parent_index":0} -->
+
+## Defaults
+
+```elixir
+Req.default_options(base_url: "https://api.github.com/repos/elixir-lang/elixir")
+```
+
+```output
+:ok
+```
+
+```elixir
+Req.get!("").body["description"]
+```
+
+```output
+"Elixir is a dynamic, functional language designed for building scalable and maintainable applications"
+```
+
+```elixir
+Req.get!("/issues").body
+|> Enum.map(& &1["title"])
+|> Enum.filter(&(&1 =~ "Support Erlang/OTP"))
+```
+
+```output
+["Support Erlang/OTP 25 new features", "Support Erlang/OTP 24 new features",
+ "Support Erlang/OTP 23 new features"]
+```
+
+## "Plugins" (just steps!)
+
+```elixir
+Req.get!("s3://ossci-datasets/", steps: [ReqS3]).body
+```
+
+```output
+["mnist/", "mnist/t10k-images-idx3-ubyte.gz", "mnist/t10k-labels-idx1-ubyte.gz",
+ "mnist/train-images-idx3-ubyte.gz", "mnist/train-labels-idx1-ubyte.gz"]
+```
+
+```elixir
+body = Req.get!("s3://ossci-datasets/mnist/train-images-idx3-ubyte.gz", steps: [ReqS3]).body
+<<_::32, n_images::32, n_rows::32, n_cols::32, _body::binary>> = body
+
+{n_images, n_rows, n_cols}
+```
+
+```output
+{60000, 28, 28}
+```
