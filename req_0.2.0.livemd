@@ -1,8 +1,6 @@
 <!-- livebook:{"persist_outputs":true} -->
 <!-- vim: syntax=markdown -->
 
-[![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https%3A%2F%2Fgithub.com%2Fwojtekmach%2Fnotebooks%2Fblob%2Fmain%2Freq_0.2.0.livemd)
-
 # Req v0.2.0
 
 ## Setup
