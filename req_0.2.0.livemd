@@ -1,4 +1,5 @@
 <!-- livebook:{"persist_outputs":true} -->
+<!-- vim: syntax=markdown -->
 
 # Req v0.2.0
 
